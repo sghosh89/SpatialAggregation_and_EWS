@@ -21,8 +21,13 @@ run_one_trajectory_on_ring_network <- function(seed, pars, m_values, stationary 
   Y_con <- aggregate_consecutive_ring(X = sim$X, m_values = m_values)
   
   # ----------------------------------------------------------
-  # 3. Random sampling for ALL m
+  # 3. Reset replicate seed before random spatial sampling
+  #
+  # This ensures that a given replicate seed always produces
+  # the same nested random patch ordering, independently of
+  # the random numbers consumed during ecological simulation.
   
+  set.seed(seed)
   Y_rand_obj <- aggregate_random_ring(X = sim$X,  m_values = m_values)
   Y_rand <- Y_rand_obj$Y
   

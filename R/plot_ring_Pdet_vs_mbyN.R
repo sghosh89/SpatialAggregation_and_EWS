@@ -124,60 +124,98 @@ dev.off()
 # ============================================================
 
 tau_distribution_data <- results_all
-
-tau_distribution_data$D <- factor(
-  tau_distribution_data$D,
-  levels = D_values
-)
-
-tau_distribution_data$m <- factor(
-  tau_distribution_data$m,
-  levels = sort(unique(tau_distribution_data$m))
-)
-
-tau_distribution_data$type <- factor(
-  tau_distribution_data$type,
-  levels = c("Null", "EWS")
-)
+tau_distribution_data$D <- factor(tau_distribution_data$D,levels = D_values)
+tau_distribution_data$m <- factor(tau_distribution_data$m,levels = sort(unique(tau_distribution_data$m)))
+tau_distribution_data$type <- factor(tau_distribution_data$type,levels = c("Null", "EWS"))
 
 
 # ============================================================
-# Supplement: histogram of Kendall's tau for Consecutive sampling
+# Prepare threshold + Pdet information for each histogram facet
+# ============================================================
+#
+# Each facet corresponds to:
+#
+#   D x m x strategy
+#
+# For each facet we need:
+#
+#   tau_crit = 95th percentile of Null tau
+#   Pdet     = fraction of EWS tau > tau_crit
+#
+null_thresholds_D$D <- factor(null_thresholds_D$D,levels = D_values)
+hist_annotations <- null_thresholds_D %>% left_join(data_Pdet_D %>% 
+                                                      select(D,m,m_over_N,strategy,Pdet),
+                                                    by = c("D","m","m_over_N","strategy"))
+
+
+# Keep factor ordering identical to histogram data
+
+hist_annotations$m <- factor(hist_annotations$m,levels = sort(unique(results_all$m)))
+# ============================================================
+# Supplement:
+# Histogram of Kendall's tau — Consecutive sampling
 # ============================================================
 
-g_tau_hist_consecutive <- tau_distribution_data %>% filter(strategy == "Consecutive") %>%
+hist_annotations_con <- hist_annotations %>%filter(strategy == "Consecutive")
+
+g_tau_hist_consecutive <-
+  tau_distribution_data %>%
+  filter(strategy == "Consecutive") %>%
   ggplot(aes(x = tau, fill = type)) +
-  geom_histogram(position = "identity", alpha = 0.45, bins = 30) +
-  scale_x_continuous(limits = c(-1, 1),
-                     breaks = c(-1, 0, 1)) +
+  geom_histogram(position = "identity", alpha = 0.45,bins = 30) +
+  geom_vline(data = hist_annotations_con, aes(xintercept = tau_crit),
+  inherit.aes = FALSE,
+  linetype = "dashed",
+  linewidth = 0.7) +
+  geom_text(data = hist_annotations_con,
+  aes(x = -Inf,y = Inf,
+      label = paste0("P[det] == ",sprintf("%.2f", Pdet))),
+  inherit.aes = FALSE,
+  parse = TRUE,
+  hjust = -0.08,
+  vjust = 1.25,
+  size = 3.2) +
+  scale_x_continuous(limits = c(-1, 1), breaks = c(-1, 0, 1)) +
   labs(title = "Consecutive sampling",
-    x = expression("Kendall's " * tau),
-    y = "Frequency", fill = NULL) +
-  facet_grid(D ~ m,
-    labeller = label_both) +
+  x = expression("Kendall's " * tau), y = "Frequency",fill = NULL) +
+  facet_grid(D ~ m,labeller = label_both) +
   theme_bw(base_size = 15,base_family = "sans") +
   theme(legend.position = "top")
 
-pdf(here("Results/plot_ring_tauHist_consecutivesampling_sigmaRatio0.5.pdf"),  width = 12, height = 6)
+pdf(here("Results/plot_ring_tauHist_consecutivesampling_sigmaRatio0.5.pdf"),  width = 12,  height = 6)
 print(g_tau_hist_consecutive)
 dev.off()
+
 # ============================================================
-# Supplement: histogram of Kendall's tau for Random sampling
+# Supplement:
+# Histogram of Kendall's tau — Random sampling
 # ============================================================
-g_tau_hist_random <- tau_distribution_data %>% filter(strategy == "Random") %>%
+hist_annotations_rand <- hist_annotations %>%filter(strategy == "Random")
+
+g_tau_hist_random <-
+  tau_distribution_data %>%
+  filter(strategy == "Random") %>%
   ggplot(aes(x = tau, fill = type)) +
-  geom_histogram(position = "identity", alpha = 0.45, bins = 30) +
-  scale_x_continuous(limits = c(-1, 1),
-                     breaks = c(-1, 0, 1)) +
+  geom_histogram(position = "identity", alpha = 0.45,bins = 30) +
+  geom_vline(data = hist_annotations_rand, aes(xintercept = tau_crit),
+             inherit.aes = FALSE,
+             linetype = "dashed",
+             linewidth = 0.7) +
+  geom_text(data = hist_annotations_rand,
+            aes(x = -Inf,y = Inf,
+                label = paste0("P[det] == ",sprintf("%.2f", Pdet))),
+            inherit.aes = FALSE,
+            parse = TRUE,
+            hjust = -0.08,
+            vjust = 1.25,
+            size = 3.2) +
+  scale_x_continuous(limits = c(-1, 1), breaks = c(-1, 0, 1)) +
   labs(title = "Random sampling",
-       x = expression("Kendall's " * tau),
-       y = "Frequency", fill = NULL) +
-  facet_grid(D ~ m,
-             labeller = label_both) +
+       x = expression("Kendall's " * tau), y = "Frequency",fill = NULL) +
+  facet_grid(D ~ m,labeller = label_both) +
   theme_bw(base_size = 15,base_family = "sans") +
   theme(legend.position = "top")
 
-pdf(here("Results/plot_ring_tauHist_randomsampling_sigmaRatio0.5.pdf"),  width = 12, height = 6)
+pdf(here("Results/plot_ring_tauHist_randomsampling_sigmaRatio0.5.pdf"),  width = 12,  height = 6)
 print(g_tau_hist_random)
 dev.off()
-
