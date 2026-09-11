@@ -99,8 +99,7 @@ retention_plot <- ggplot(retention_df, aes(x = m_relative, y = Rm, colour = rho_
     )
   )
 
-# Display figure
-retention_plot
+
 
 pdf(here("Results/plot_general_aggregation_framework.pdf"),
     width = 7, height = 6)

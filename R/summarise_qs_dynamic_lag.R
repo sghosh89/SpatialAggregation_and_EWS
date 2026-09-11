@@ -247,6 +247,7 @@ max_initial_error
 # max_relative_lag:
 #   largest proportional discrepancy during the transition
 # ============================================================
+saveRDS(data_qs_dynamic_lag, here("Results/data_qs_dynamic_lag.RDS"))# Save results
 
 lag_summary <- data_qs_dynamic_lag %>% group_by(D,gamma_val,m,m_over_N,strategy) %>%
   summarise(final_lag = last(lag),
@@ -257,9 +258,6 @@ lag_summary <- data_qs_dynamic_lag %>% group_by(D,gamma_val,m,m_over_N,strategy)
 lag_summary %>%
   arrange(desc(max_relative_lag))
 
-
-# Save results
-saveRDS(data_qs_dynamic_lag, here("Results/data_qs_dynamic_lag.RDS"))
 saveRDS(lag_summary, here("Results/summary_qs_dynamic_lag.RDS"))
 
 
@@ -280,13 +278,13 @@ g1 <- ggplot(lag_summary, aes(x = m_over_N, y = final_relative_lag, colour = fac
   geom_point(size = 2) +
   facet_wrap(~ gamma_val, nrow = 1,labeller = label_both)+ #, labeller = labeller(gamma_val = function(x) paste0("\u03B3 = ", x))) +
   labs(x = expression("Relative aggregation scale, " * m/N),
-       y = "Final relative discrepancy",
+       y = "Relative discrepancy",
        colour = expression(D),
        linetype = "Sampling strategy") +
   theme_bw(base_size = 14, base_family = "sans") +
   theme(legend.position = "top")
 
-pdf(here("Results/Final_relative_lag_vs_mbyN_qs_and_dynamic_approach.pdf"),  width = 10, height = 5)
+pdf(here("Results/Relative_lag_vs_mbyN_qs_and_dynamic_approach.pdf"),  width = 10, height = 5)
 print(g1)
 dev.off()
 

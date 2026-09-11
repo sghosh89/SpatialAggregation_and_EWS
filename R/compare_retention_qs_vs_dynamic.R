@@ -93,10 +93,10 @@ g1<-ggplot(data_compare_long, aes(x = lambda, y = Rm, color = strategy, linetype
     y = expression(R[m]),
     color = "Sampling strategy",
     linetype = "Method") +
-  theme_bw(base_size = 14, base_family = "sans") + 
+  theme_bw(base_size = 17, base_family = "sans") + 
   theme(legend.position = "top")
 
-pdf(here("Results/compare_Rm_vs_lambda_qs_and_dynamic_approach.pdf"),  width = 9, height = 6)
+pdf(here("Results/compare_Rm_vs_lambda_qs_and_dynamic_approach.pdf"),  width = 9.5, height = 6)
 print(g1)
 dev.off()
 #Figure X. Dynamic changes in spatial variance retention during approach to criticality. 

@@ -18,11 +18,13 @@ source(here("R/summarise_qs_dynamic_lag.R"))# Generalize QS-dynamic discrepancy 
 source(here("R/sim_detection_threshold_in_ring.R"))# Simulate non-stationary EWS trajectories and matched stationary null trajectories across parameter space
 source(here("R/plot_ring_Pdet_vs_mbyN.R"))# Plot P_det versus m/N this is plotting results only for sigmaRatio=0.5, # maybe delete this
 source(here("R/plot_Pdet_heatmap.R"))# this is heatmap across parameter space
+#source(here("R/plot_Ppos_heatmap.R"))# for suppmat or just report the range: > range(data_Pplus_all$Pplus, na.rm = TRUE)
+#                                                                               [1] 0.926 0.965
 
 #==============================================
-# start with observation noise model
-#source(here("R/sim_detection_threshold_obsnoise_in_ring.R"))
-#source(here("R/plot_ring_Pdet_vs_mbyN_with_obsnoise.R"))
+# start with observation noise model (put in suppmat)
+source(here("R/sim_detection_threshold_obsnoise_in_ring.R"))
+source(here("R/plot_ring_Pdet_vs_mbyN_with_obsnoise.R"))
 
 #=================================================
 # Observation-error extension

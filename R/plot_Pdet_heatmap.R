@@ -63,7 +63,7 @@ g_Pdet_heat <- ggplot(data_Pdet_all, aes(x = factor(m_over_N), y = gamma_plot, f
   theme_bw(base_size = 14, base_family = "sans") +
   theme(legend.position = "top", panel.grid = element_blank())
 g_Pdet_heat
-
+range(data_Pdet_all$Pdet)
 pdf(here("Results/plot_Pdet_heatmap.pdf"),  width = 12, height = 6)
 print(g_Pdet_heat)
 dev.off()
